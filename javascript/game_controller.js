@@ -8,8 +8,10 @@ const KEY_RIGHT_ALT = 68;
 const KEY_SPACE = 32;
 
 const PLAYER_RADIUS = 20;
+const PLAYER_SPEED = GAME_WIDTH / 1.5; // PIXELS PER SECOND
 
 const gameState = {
+    lastFrameTime: Date.now(),
     player: {
         x: 0,
         y: 0,
@@ -56,21 +58,23 @@ const createPlayer = ($container) => {
 }
 
 // RESPOND TO PLAYER INPUT
-const updatePlayer = () => {
+const updatePlayer = (dt) => {
     if (gameState.player.leftPressed) {
-        gameState.player.x -= 5;
+        gameState.player.x -= PLAYER_SPEED * dt;
     }
     if (gameState.player.rightPressed) {
-        gameState.player.x += 5;
+        gameState.player.x += PLAYER_SPEED * dt;
     }
     const $player = document.querySelector('.player');
     setPosition($player, gameState.player.x, gameState.player.y);
+    clampPosition(PLAYER_RADIUS, 0, GAME_WIDTH);
 }
 
 // MAIN GAME LOOP
 const update = () => {
-    updatePlayer();
-    clampPosition(PLAYER_RADIUS, 0, GAME_WIDTH);
+    const dt = (Date.now() - gameState.lastFrameTime) / 1000;
+    gameState.lastFrameTime = Date.now();
+    updatePlayer(dt);
     window.requestAnimationFrame(update);
 }
 
