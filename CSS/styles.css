@@ -35,7 +35,7 @@ body {
     flex: 1;
 }
 
-.game-container {
+#game-container {
     background: url(../Assets/Backgrounds/blue.png);
     width: 800px;
     height: 600px;
@@ -52,4 +52,10 @@ body {
     to {
         background-position-y: 255px;
     }
+}
+
+.player {
+    width: 40px;
+    margin-left: -20px;
+    position: absolute;
 }
