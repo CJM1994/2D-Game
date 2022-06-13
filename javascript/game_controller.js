@@ -7,6 +7,8 @@ const KEY_LEFT_ALT = 65;
 const KEY_RIGHT_ALT = 68;
 const KEY_SPACE = 32;
 
+const PLAYER_RADIUS = 20;
+
 const gameState = {
     player: {
         x: 0,
@@ -17,15 +19,30 @@ const gameState = {
     },
 };
 
+// INITIALIZE GAME STATE
 const init = () => {
     const $container = document.getElementById('game-container');
     createPlayer($container);
 }
 
+// SET PLAYER POSITION
 const setPosition = ($el, x, y) => {
     $el.style.transform = `translate(${x}px, ${y}px)`;
 }
 
+// KEEP PLAYER WITHIN BOUNDS
+const clampPosition = (playerRadius, min, max) => {
+    if (gameState.player.x >= max - playerRadius) {
+        gameState.player.x = max - playerRadius;
+    }
+    if (gameState.player.x <= min + playerRadius) {
+        gameState.player.x = min + playerRadius;
+    }
+    const $player = document.querySelector('.player');
+    setPosition($player, gameState.player.x, gameState.player.y);
+}
+
+// CREATE PLAYER DOM ELEMENT
 const createPlayer = ($container) => {
     gameState.player.x = GAME_WIDTH / 2;
     gameState.player.y = GAME_HEIGHT - (GAME_HEIGHT / 10);
@@ -38,6 +55,7 @@ const createPlayer = ($container) => {
     setPosition($player, gameState.player.x, gameState.player.y);
 }
 
+// RESPOND TO PLAYER INPUT
 const updatePlayer = () => {
     if (gameState.player.leftPressed) {
         gameState.player.x -= 5;
@@ -49,11 +67,14 @@ const updatePlayer = () => {
     setPosition($player, gameState.player.x, gameState.player.y);
 }
 
+// MAIN GAME LOOP
 const update = () => {
     updatePlayer();
+    clampPosition(PLAYER_RADIUS, 0, GAME_WIDTH);
     window.requestAnimationFrame(update);
 }
 
+// KEY DOWN EVENT HANDLER
 const onKeyDown = (event) => {
     switch (event.keyCode) {
         case KEY_LEFT:
@@ -71,6 +92,7 @@ const onKeyDown = (event) => {
     }
 }
 
+// KEY UP EVENT HANDLER
 const onKeyUp = (event) => {
     switch (event.keyCode) {
         case KEY_LEFT:
@@ -87,6 +109,7 @@ const onKeyUp = (event) => {
             break;
 }}
 
+// EXECUTE SCRIPT
 init();
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
