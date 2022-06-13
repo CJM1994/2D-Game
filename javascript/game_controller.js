@@ -2,14 +2,18 @@ const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 
 const KEY_LEFT = 37;
-const KEY_DOWN = 38;
 const KEY_RIGHT = 39;
-const KEY_UP = 40;
+const KEY_LEFT_ALT = 65;
+const KEY_RIGHT_ALT = 68;
+const KEY_SPACE = 32;
 
 const gameState = {
     player: {
         x: 0,
         y: 0,
+        leftPressed: false,
+        rightPressed: false,
+        spacePressed: false,
     },
 };
 
@@ -34,29 +38,56 @@ const createPlayer = ($container) => {
     setPosition($player, gameState.player.x, gameState.player.y);
 }
 
-const onKeyDown = (event) => {
+const updatePlayer = () => {
+    if (gameState.player.leftPressed) {
+        gameState.player.x -= 5;
+    }
+    if (gameState.player.rightPressed) {
+        gameState.player.x += 5;
+    }
     const $player = document.querySelector('.player');
-    console.log(event.keyCode);
+    setPosition($player, gameState.player.x, gameState.player.y);
+}
 
+const update = () => {
+    updatePlayer();
+    window.requestAnimationFrame(update);
+}
+
+const onKeyDown = (event) => {
     switch (event.keyCode) {
         case KEY_LEFT:
-            gameState.player.x -= 5;
-            setPosition($player, gameState.player.x, gameState.player.y);
-            break;
-        case KEY_UP:
-            gameState.player.y += 5;
-            setPosition($player, gameState.player.x, gameState.player.y);
+            gameState.player.leftPressed = true;
             break;
         case KEY_RIGHT:
-            gameState.player.x += 5;
-            setPosition($player, gameState.player.x, gameState.player.y);
+            gameState.player.rightPressed = true;
             break;
-        case KEY_DOWN:
-            gameState.player.y -= 5;
-            setPosition($player, gameState.player.x, gameState.player.y);
+        case KEY_LEFT_ALT:
+            gameState.player.leftPressed = true;
+            break;
+        case KEY_RIGHT_ALT:
+            gameState.player.rightPressed = true;
             break;
     }
 }
 
+const onKeyUp = (event) => {
+    switch (event.keyCode) {
+        case KEY_LEFT:
+            gameState.player.leftPressed = false;
+            break;
+        case KEY_RIGHT:
+            gameState.player.rightPressed = false;
+            break;
+        case KEY_LEFT_ALT:
+            gameState.player.leftPressed = false;
+            break;
+        case KEY_RIGHT_ALT:
+            gameState.player.rightPressed = false;
+            break;
+}}
+
 init();
 document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+requestAnimationFrame(update);
